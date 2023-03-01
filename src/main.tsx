@@ -1,10 +1,15 @@
+import { ThemeProvider } from '@mui/material';
 import ReactDOM from 'react-dom/client';
-import { HashRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
 import App from './App';
 import './index.css';
+import { store } from './store';
+import { theme } from './theme';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <HashRouter>
+  <Provider store={store}>
+    <ThemeProvider theme={theme}>
     <App />
-  </HashRouter>
+    </ThemeProvider>
+  </Provider>
 );
