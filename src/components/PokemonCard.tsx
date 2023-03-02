@@ -2,12 +2,15 @@ import React from 'react';
 import { Box, Card } from '@mui/material';
 import { Pokemon, TypeName } from '../models';
 import Typography from '@mui/material/Typography';
+import { blue } from '@mui/material/colors';
+import { CardProps } from '@mui/material/Card';
 
-interface PokemonCardProps {
+interface PokemonCardProps extends CardProps {
   pokemon: Pokemon;
+  selected?: boolean;
 }
 
-export const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon }) => {
+export const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon, selected, ...props }) => {
   const typesColor = {
     [TypeName.NORMAL]: '#A8A77A',
     [TypeName.FIRE]: '#EE8130',
@@ -30,17 +33,34 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon }) => {
   };
 
   return (
-    <Card sx={{ p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer' }}>
+    <Card
+      {...props}
+      sx={{
+        p: 4,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        cursor: 'pointer',
+        boxShadow: selected ? `inset 0px 0px 0px 3px ${blue[700]}` : '',
+      }}
+    >
       <img src={pokemon.sprites.front_default}></img>
       <Typography sx={{ textTransform: 'capitalize' }} variant="h5" component="h4">
         {pokemon.name}
       </Typography>
       <Box sx={{ display: 'flex', alignSelf: 'flex-start', gap: 1, mt: 2 }}>
-        {pokemon.types.map(({ type }) => (
+        {pokemon.types.map(({ type, slot }) => (
           <Typography
+            key={slot}
             variant="body1"
             component="p"
-            sx={{ background: typesColor[type.name], px: 2, py: 1, textTransform: 'capitalize', borderRadius: 2}}
+            sx={{
+              background: typesColor[type.name],
+              px: 2,
+              py: 1,
+              textTransform: 'capitalize',
+              borderRadius: 2,
+            }}
           >
             {type.name}
           </Typography>

@@ -14,7 +14,7 @@ import '@fontsource/roboto/700.css';
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <Provider store={store}>
     <ThemeProvider theme={theme}>
-    <App />
+      <App />
     </ThemeProvider>
   </Provider>
 );

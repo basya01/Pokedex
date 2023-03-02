@@ -1,33 +1,55 @@
-import { Container } from '@mui/material';
-import Button from '@mui/material/Button';
-import { useEffect } from 'react';
-import { Alerts, Header, Pokemons } from './components';
-import { useAppDispatch, useAppSelector } from './hooks';
+import { Box, Button, CircularProgress, Container } from '@mui/material';
+import blue from '@mui/material/colors/blue';
+import { useState } from 'react';
+import { Alerts, Header, Pokemons, SelectedPokemon } from './components';
+import { useFetchPokemons } from './hooks';
 import './index.css';
-import { fetchPokemons, Status } from './store/slices/pokemons';
+import { Pokemon } from './models';
+import { Status } from './store/slices/pokemons';
 
 function App() {
-  const pokedex = useAppSelector((state) => state.pokemons);
-  const dispatch = useAppDispatch();
+  const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null);
+  const { pokedex, loadMorePokemons } = useFetchPokemons();
 
-  useEffect(() => {
-    dispatch(fetchPokemons());
-  }, []);
+  const isLoading = pokedex.status === Status.LOADING;
+
+  const loadMoreHandler = () => {
+    loadMorePokemons();
+  };
+  const pokemonHandler = (pokemon: Pokemon) => {
+    setSelectedPokemon(pokemon);
+  };
 
   return (
-    <div className="App">
+    <div>
       <Header />
       <Container sx={{ my: 4 }} maxWidth="xl" component="main">
-        <Pokemons pokemons={pokedex.pokemons} />
-        <Button
-          sx={{ mt: 3 }}
-          variant="contained"
-          size="large"
-          disabled={pokedex.status === Status.LOADING}
-          onClick={() => dispatch(fetchPokemons(pokedex.next))}
+        <Box
+          sx={{
+            position: 'relative',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+          }}
         >
-          Load more
-        </Button>
+          <Pokemons
+            pokemons={pokedex.pokemons}
+            onClickPokemon={pokemonHandler}
+            {...(selectedPokemon && { selected: selectedPokemon })}
+          />
+          {selectedPokemon && (
+            <SelectedPokemon
+              sx={{ position: 'absolute', right: 0, width: 300, top: '50%', transform: 'translateY(-50%)' }}
+              pokemon={selectedPokemon}
+            />
+          )}
+        </Box>
+        <Box sx={{ mt: 3, display: 'flex', alignItems: 'center' }}>
+          <Button variant="contained" size="large" disabled={isLoading} onClick={loadMoreHandler}>
+            Load more
+          </Button>
+          {isLoading && <CircularProgress sx={{ ml: 2 }} size="35px" />}
+        </Box>
       </Container>
       <Alerts />
     </div>
