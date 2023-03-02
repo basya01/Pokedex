@@ -1,5 +1,5 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { Collapse, AlertProps, Alert, Box, IconButton } from '@mui/material';
+import { Alert, AlertProps, Box, Collapse, IconButton } from '@mui/material';
 import React from 'react';
 import { TransitionGroup } from 'react-transition-group';
 import { useAppDispatch, useAppSelector } from '../hooks';

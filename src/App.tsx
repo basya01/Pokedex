@@ -1,14 +1,35 @@
-import { Box, Button, CircularProgress, Container } from '@mui/material';
-import blue from '@mui/material/colors/blue';
+import { Box, Button, CircularProgress, Container, SelectChangeEvent } from '@mui/material';
 import { useState } from 'react';
-import { Alerts, Header, Pokemons, SelectedPokemon } from './components';
+import { Alerts, FilterSelect, Header, Pokemons, SelectedPokemon } from './components';
 import { useFetchPokemons } from './hooks';
 import './index.css';
-import { Pokemon } from './models';
+import { Pokemon, TypeName } from './models';
 import { Status } from './store/slices/pokemons';
+
+const types = [
+  TypeName.NORMAL,
+  TypeName.FIRE,
+  TypeName.WATER,
+  TypeName.ELECTRIC,
+  TypeName.GRASS,
+  TypeName.ICE,
+  TypeName.FIGHTING,
+  TypeName.POISON,
+  TypeName.GROUND,
+  TypeName.FLYING,
+  TypeName.PSYCHIC,
+  TypeName.BUG,
+  TypeName.ROCK,
+  TypeName.GHOST,
+  TypeName.DRAGON,
+  TypeName.DARK,
+  TypeName.STEEL,
+  TypeName.FAIRY,
+];
 
 function App() {
   const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null);
+  const [filterName, setFilterName] = useState<string>('');
   const { pokedex, loadMorePokemons } = useFetchPokemons();
 
   const isLoading = pokedex.status === Status.LOADING;
@@ -16,14 +37,24 @@ function App() {
   const loadMoreHandler = () => {
     loadMorePokemons();
   };
+
   const pokemonHandler = (pokemon: Pokemon) => {
     setSelectedPokemon(pokemon);
   };
+
+  const filterHandler = (event: SelectChangeEvent<string>) => {
+    setFilterName(event.target.value);
+  };
+
+  const filteredPokemons = filterName
+    ? pokedex.pokemons.filter((pokemon) => pokemon.types.some(({ type }) => type.name === filterName))
+    : pokedex.pokemons;
 
   return (
     <div>
       <Header />
       <Container sx={{ my: 4 }} maxWidth="xl" component="main">
+        <FilterSelect selectValue={filterName} items={types} onChange={filterHandler} />
         <Box
           sx={{
             position: 'relative',
@@ -33,7 +64,7 @@ function App() {
           }}
         >
           <Pokemons
-            pokemons={pokedex.pokemons}
+            pokemons={filteredPokemons}
             onClickPokemon={pokemonHandler}
             {...(selectedPokemon && { selected: selectedPokemon })}
           />
