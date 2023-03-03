@@ -22,6 +22,7 @@ export const FilterSelect: React.FC<TypeFilterSelectProps> = ({ onChange, items,
         onChange={onChange}
         displayEmpty
         inputProps={{ 'aria-label': 'Without label' }}
+        sx={{ background: '#fff' }}
       >
         <MenuItem value={''}>
           <em>None</em>
