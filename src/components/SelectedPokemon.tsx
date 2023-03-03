@@ -12,8 +12,24 @@ interface SelectedPokemonProps extends CardProps {
 
 export const SelectedPokemon: React.FC<SelectedPokemonProps> = ({ pokemon, onClose, ...props }) => {
   return (
-    <Card sx={{ p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }} {...props}>
-      <CloseIcon sx={{ alignSelf: 'flex-end', cursor: 'pointer', fontSize: 26}} onClick={onClose} />
+    <Card {...props} sx={{ p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <Box
+        sx={{
+          position: 'absolute',
+          zIndex: -1,
+          width: '350%',
+          height: '350%',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          backgroundImage: `url(${pokemon.sprites.front_default})`,
+          filter: 'blur(100px)',
+          '-webkit-filter': 'blur(100px)',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'cover',
+        }}
+      ></Box>
+      <CloseIcon sx={{ alignSelf: 'flex-end', cursor: 'pointer', fontSize: 26 }} onClick={onClose} />
       <Box sx={{ display: 'flex' }}>
         <img src={pokemon.sprites.front_default} alt="pokemon_sprite" />
         <img src={pokemon.sprites.back_default} alt="pokemon_sprite" />
