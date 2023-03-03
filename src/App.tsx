@@ -4,15 +4,14 @@ import {
   CircularProgress,
   Container,
   SelectChangeEvent,
-  styled,
-  Typography,
+  styled
 } from '@mui/material';
-import { blue } from '@mui/material/colors';
 import { useState } from 'react';
 import { Alerts, FilterSelect, Header, Pokemons, SelectedPokemon } from './components';
-import { useFetchPokemons } from './hooks';
+import { useAppDispatch, useFetchPokemons } from './hooks';
 import './index.css';
 import { Pokemon, TypeName } from './models';
+import { addAlert } from './store/slices/alerts';
 import { Status } from './store/slices/pokemons';
 
 const types = Object.values(TypeName);
@@ -50,7 +49,9 @@ const RespBox = styled(Box)(({ theme }) => ({
 function App() {
   const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null);
   const [filterName, setFilterName] = useState<string>('');
+  const [filtPokemons, setFilteredPokemons] = useState<Pokemon[] | null>(null);
   const { pokedex, loadMorePokemons } = useFetchPokemons();
+  const dispatch = useAppDispatch();
 
   const isLoading = pokedex.status === Status.LOADING;
 
@@ -64,15 +65,22 @@ function App() {
 
   const filterHandler = (event: SelectChangeEvent<string>) => {
     setFilterName(event.target.value);
+    if (!event.target.value) {
+      setFilteredPokemons(null);
+      return;
+    }
+    const filtered = pokedex.pokemons.filter((pokemon) =>
+      pokemon.types.some(({ type }) => type.name === event.target.value)
+    );
+    if (!filtered.length) {
+      dispatch(addAlert({ text: 'Pokemons with such a type are not found', severity: 'error' }));
+    }
+    setFilteredPokemons(filtered.length ? filtered : []);
   };
 
   const closePokemonHandler = () => {
     setSelectedPokemon(null);
   };
-
-  const filteredPokemons = filterName
-    ? pokedex.pokemons.filter((pokemon) => pokemon.types.some(({ type }) => type.name === filterName))
-    : pokedex.pokemons;
 
   return (
     <div>
@@ -80,38 +88,11 @@ function App() {
       <Container sx={{ my: 4 }} maxWidth="xl" component="main">
         <FilterSelect selectValue={filterName} items={types} onChange={filterHandler} />
         <RespBox>
-          <Box
-            flexGrow={1}
-            sx={{
-              height: 'calc(100vh - 310px)',
-              overflow: 'auto',
-              '&::-webkit-scrollbar': {
-                width: '10px',
-                height: '3px',
-              },
-              '&::-webkit-scrollbar-track': { background: 'rgba(0, 0, 0, 0.05)', borderRadius: '20px' },
-              '&::-webkit-scrollbar-thumb': {
-                background: blue[700],
-                borderRadius: '20px',
-              },
-              '&::-webkit-scrollbar-thumb:hover': {
-                background: '#555',
-              },
-            }}
-          >
-            {!filteredPokemons.length && pokedex?.status !== Status.LOADING ? (
-              <Typography sx={{ mt: 2 }} variant="h5" component="p">
-                Pokemons are not found
-              </Typography>
-            ) : (
-              <Pokemons
-                pokemons={filteredPokemons}
-                onClickPokemon={pokemonHandler}
-                {...(selectedPokemon && { selected: selectedPokemon })}
-              />
-            )}
-          </Box>
-
+          <Pokemons
+            pokemons={filtPokemons || pokedex.pokemons}
+            onClickPokemon={pokemonHandler}
+            {...(selectedPokemon && { selected: selectedPokemon })}
+          />
           {selectedPokemon && <RespSelectedPokemon onClose={closePokemonHandler} pokemon={selectedPokemon} />}
         </RespBox>
         <Box sx={{ mt: 3, display: 'flex', alignItems: 'center' }}>

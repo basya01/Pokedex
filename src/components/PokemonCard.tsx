@@ -10,7 +10,7 @@ interface PokemonCardProps extends CardProps {
   selected?: boolean;
 }
 
-const typesColor = {
+const typeColors = {
   [TypeName.NORMAL]: '#A8A77A',
   [TypeName.FIRE]: '#EE8130',
   [TypeName.WATER]: '#6390F0',
@@ -55,7 +55,7 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon, selected, ...
             variant="body1"
             component="p"
             sx={{
-              background: typesColor[type.name],
+              background: typeColors[type.name],
               px: 2,
               py: 1,
               textTransform: 'capitalize',

@@ -1,6 +1,6 @@
 import { Table, TableBody, TableCell, TableHead, TableProps, TableRow } from '@mui/material';
 import React from 'react';
-import { Pokemon, Stat } from '../models/Pokemon';
+import { Pokemon } from '../models/Pokemon';
 
 interface StatsTableProps extends TableProps {
   pokemon: Pokemon;

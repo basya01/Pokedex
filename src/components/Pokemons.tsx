@@ -1,4 +1,5 @@
 import { Box, Grid, styled } from '@mui/material';
+import { blue } from '@mui/material/colors';
 import React from 'react';
 import { Pokemon } from '../models';
 import { PokemonCard } from './PokemonCard';
@@ -10,6 +11,20 @@ interface PokemonsProps {
 }
 
 const RespGrid = styled(Grid)(({ theme }) => ({
+  height: 'calc(100vh - 310px)',
+  overflow: 'auto',
+  '&::-webkit-scrollbar': {
+    width: '10px',
+    height: '3px',
+  },
+  '&::-webkit-scrollbar-track': { background: 'rgba(0, 0, 0, 0.05)', borderRadius: '20px' },
+  '&::-webkit-scrollbar-thumb': {
+    background: blue[700],
+    borderRadius: '20px',
+  },
+  '&::-webkit-scrollbar-thumb:hover': {
+    background: '#555',
+  },
   maxWidth: 1070,
   [theme.breakpoints.down('xl')]: {
     maxWidth: 780,

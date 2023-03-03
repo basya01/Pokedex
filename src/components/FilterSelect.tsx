@@ -1,5 +1,4 @@
-import { FormControl, MenuItem, Select } from '@mui/material';
-import { SelectChangeEvent } from '@mui/material/Select/Select';
+import { FormControl, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import React from 'react';
 import { TypeName } from '../models';
 
