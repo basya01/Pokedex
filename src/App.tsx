@@ -5,7 +5,7 @@ import {
   Container,
   SelectChangeEvent,
   styled,
-  Typography
+  Typography,
 } from '@mui/material';
 import { blue } from '@mui/material/colors';
 import { useState } from 'react';
@@ -81,6 +81,7 @@ function App() {
         <FilterSelect selectValue={filterName} items={types} onChange={filterHandler} />
         <RespBox>
           <Box
+            flexGrow={1}
             sx={{
               height: 'calc(100vh - 310px)',
               overflow: 'auto',

@@ -1,4 +1,4 @@
-import { Grid, styled } from '@mui/material';
+import { Box, Grid, styled } from '@mui/material';
 import React from 'react';
 import { Pokemon } from '../models';
 import { PokemonCard } from './PokemonCard';
