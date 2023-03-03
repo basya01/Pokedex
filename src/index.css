@@ -26,6 +26,7 @@ footer, header, hgroup, menu, nav, section {
 body {
 	font-family: "Roboto", sans-serif;
 	line-height: 1;
+	background: #e3f2fd;
 }
 ol, ul {
 	list-style: none;
