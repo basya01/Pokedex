@@ -14,9 +14,7 @@ import { Pokemon, TypeName } from './models';
 import { addAlert } from './store/slices/alerts';
 import { Status } from './store/slices/pokemons';
 
-const types = Object.values(TypeName);
-
-const RespSelectedPokemon = styled(SelectedPokemon)(({ theme }) => ({
+const StyledSelectedPokemon = styled(SelectedPokemon)(({ theme }) => ({
   position: 'absolute',
   right: 0,
   width: 300,
@@ -36,7 +34,7 @@ const RespSelectedPokemon = styled(SelectedPokemon)(({ theme }) => ({
   },
 }));
 
-const RespBox = styled(Box)(({ theme }) => ({
+const StyledBox = styled(Box)(({ theme }) => ({
   position: 'relative',
   display: 'flex',
   justifyContent: 'space-between',
@@ -46,9 +44,11 @@ const RespBox = styled(Box)(({ theme }) => ({
   },
 }));
 
+const typesNames = Object.values(TypeName);
+
 function App() {
   const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null);
-  const [filterName, setFilterName] = useState<string>('');
+  const [filterType, setFilterType] = useState<TypeName | ''>('');
   const [filtPokemons, setFilteredPokemons] = useState<Pokemon[] | null>(null);
   const { pokedex, loadMorePokemons } = useFetchPokemons();
   const dispatch = useAppDispatch();
@@ -63,8 +63,8 @@ function App() {
     setSelectedPokemon(pokemon);
   };
 
-  const filterHandler = (event: SelectChangeEvent<string>) => {
-    setFilterName(event.target.value);
+  const filterHandler = (event: SelectChangeEvent<TypeName | ''>) => {
+    setFilterType(event.target.value as TypeName | '');
     if (!event.target.value) {
       setFilteredPokemons(null);
       return;
@@ -75,7 +75,7 @@ function App() {
     if (!filtered.length) {
       dispatch(addAlert({ text: 'Pokemons with such a type are not found', severity: 'error' }));
     }
-    setFilteredPokemons(filtered.length ? filtered : []);
+    setFilteredPokemons(filtered);
   };
 
   const closePokemonHandler = () => {
@@ -86,15 +86,15 @@ function App() {
     <div>
       <Header />
       <Container sx={{ my: 4 }} maxWidth="xl" component="main">
-        <FilterSelect selectValue={filterName} items={types} onChange={filterHandler} />
-        <RespBox>
+        <FilterSelect selectValue={filterType} items={typesNames} onChange={filterHandler} />
+        <StyledBox>
           <Pokemons
             pokemons={filtPokemons || pokedex.pokemons}
             onClickPokemon={pokemonHandler}
             {...(selectedPokemon && { selected: selectedPokemon })}
           />
-          {selectedPokemon && <RespSelectedPokemon onClose={closePokemonHandler} pokemon={selectedPokemon} />}
-        </RespBox>
+          {selectedPokemon && <StyledSelectedPokemon onClose={closePokemonHandler} pokemon={selectedPokemon} />}
+        </StyledBox>
         <Box sx={{ mt: 3, display: 'flex', alignItems: 'center' }}>
           <Button variant="contained" size="large" disabled={isLoading} onClick={loadMoreHandler}>
             Load more

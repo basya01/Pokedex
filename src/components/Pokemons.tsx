@@ -10,7 +10,7 @@ interface PokemonsProps {
   selected?: Pokemon;
 }
 
-const RespGrid = styled(Grid)(({ theme }) => ({
+const StyledGrid = styled(Grid)(({ theme }) => ({
   height: 'calc(100vh - 310px)',
   overflow: 'auto',
   '&::-webkit-scrollbar': {
@@ -42,7 +42,7 @@ const RespGrid = styled(Grid)(({ theme }) => ({
 
 export const Pokemons: React.FC<PokemonsProps> = ({ pokemons, onClickPokemon, selected }) => {
   return (
-    <RespGrid columns={{ xs: 1, sm: 1, md: 2, lg: 3, xl: 4 }} rowGap={2} columnSpacing={2} container>
+    <StyledGrid columns={{ xs: 1, sm: 1, md: 2, lg: 3, xl: 4 }} rowGap={2} columnSpacing={2} container>
       {pokemons.map((pokemon) => (
         <Grid item key={pokemon.id} xs={1} sm={1} md={1} lg={1} xl={1}>
           <PokemonCard
@@ -52,6 +52,6 @@ export const Pokemons: React.FC<PokemonsProps> = ({ pokemons, onClickPokemon, se
           />
         </Grid>
       ))}
-    </RespGrid>
+    </StyledGrid>
   );
 };
