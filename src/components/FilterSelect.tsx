@@ -3,9 +3,9 @@ import React from 'react';
 import { TypeName } from '../models';
 
 interface TypeFilterSelectProps {
-  onChange: (event: SelectChangeEvent<string>) => void;
+  onChange: (event: SelectChangeEvent<TypeName | ''>) => void;
   items: TypeName[];
-  selectValue: string;
+  selectValue: TypeName | '';
 }
 
 export interface TypeItem {
