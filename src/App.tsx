@@ -74,7 +74,6 @@ function App() {
   const filterHandler = (event: SelectChangeEvent<TypeName | ''>) => {
     setFilterType(event.target.value as TypeName | '');
   };
-  console.log(filteredPokemons);
 
   const closePokemonHandler = () => {
     setSelectedPokemon(null);
