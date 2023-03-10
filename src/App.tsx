@@ -1,12 +1,5 @@
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  SelectChangeEvent,
-  styled
-} from '@mui/material';
-import { useState } from 'react';
+import { Box, Button, CircularProgress, Container, SelectChangeEvent, styled } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { Alerts, FilterSelect, Header, Pokemons, SelectedPokemon } from './components';
 import { useAppDispatch, useFetchPokemons } from './hooks';
 import './index.css';
@@ -49,11 +42,26 @@ const typesNames = Object.values(TypeName);
 function App() {
   const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null);
   const [filterType, setFilterType] = useState<TypeName | ''>('');
-  const [filtPokemons, setFilteredPokemons] = useState<Pokemon[] | null>(null);
+  const [filteredPokemons, setFilteredPokemons] = useState<Pokemon[] | null>(null);
   const { pokedex, loadMorePokemons } = useFetchPokemons();
   const dispatch = useAppDispatch();
 
   const isLoading = pokedex.status === Status.LOADING;
+
+  useEffect(() => {
+    if (!filterType) {
+      setFilteredPokemons(null);
+      return;
+    }
+    const filtered = pokedex.pokemons.filter((pokemon) =>
+      pokemon.types.some(({ type }) => type.name === filterType)
+    );
+    console.log(filtered);
+    if (!filtered.length) {
+      dispatch(addAlert({ text: 'Pokemons with such a type are not found', severity: 'error' }));
+    }
+    setFilteredPokemons(filtered);
+  }, [pokedex.pokemons, filterType]);
 
   const loadMoreHandler = () => {
     loadMorePokemons();
@@ -65,18 +73,8 @@ function App() {
 
   const filterHandler = (event: SelectChangeEvent<TypeName | ''>) => {
     setFilterType(event.target.value as TypeName | '');
-    if (!event.target.value) {
-      setFilteredPokemons(null);
-      return;
-    }
-    const filtered = pokedex.pokemons.filter((pokemon) =>
-      pokemon.types.some(({ type }) => type.name === event.target.value)
-    );
-    if (!filtered.length) {
-      dispatch(addAlert({ text: 'Pokemons with such a type are not found', severity: 'error' }));
-    }
-    setFilteredPokemons(filtered);
   };
+  console.log(filteredPokemons);
 
   const closePokemonHandler = () => {
     setSelectedPokemon(null);
@@ -89,11 +87,13 @@ function App() {
         <FilterSelect selectValue={filterType} items={typesNames} onChange={filterHandler} />
         <StyledBox>
           <Pokemons
-            pokemons={filtPokemons || pokedex.pokemons}
+            pokemons={filteredPokemons || pokedex.pokemons}
             onClickPokemon={pokemonHandler}
             {...(selectedPokemon && { selected: selectedPokemon })}
           />
-          {selectedPokemon && <StyledSelectedPokemon onClose={closePokemonHandler} pokemon={selectedPokemon} />}
+          {selectedPokemon && (
+            <StyledSelectedPokemon onClose={closePokemonHandler} pokemon={selectedPokemon} />
+          )}
         </StyledBox>
         <Box sx={{ mt: 3, display: 'flex', alignItems: 'center' }}>
           <Button variant="contained" size="large" disabled={isLoading} onClick={loadMoreHandler}>
